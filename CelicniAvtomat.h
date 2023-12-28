@@ -100,6 +100,7 @@ public:
     char &at(int x, int y)
     {
         x+=1;
+        y+=1;
         return tab[y * m_x + x];
     }
     char *GetTab()
