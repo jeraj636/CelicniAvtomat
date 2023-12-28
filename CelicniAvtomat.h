@@ -8,8 +8,8 @@ class CelicniAvtomat
 public:
     CelicniAvtomat(int x, int y, unsigned int seed, int MinProcentZa0)
     {
-        x+=2;
-        y+=2;
+        x += 2;
+        y += 2;
         tab = new char[x * y];
         m_x = x;
         m_y = y;
@@ -97,10 +97,85 @@ public:
         }
         delete[] nov;
     }
+    void NarediMorje()
+    {
+
+        for (int i = 0; i < m_y; i++)
+        {
+            for (int j = 0; j < m_x; j++)
+            {
+                if (tab[i * m_x + j] == '0')
+                {
+                    bool plaza = false;
+                    if (tab[i * m_x + j - 1] == '1')
+                        plaza = true;
+                    else if (tab[i * m_x + j + 1] == '1')
+                        plaza = true;
+                    else if (tab[(i - 1) * m_x + j - 1] == '1')
+                        plaza = true;
+                    else if (tab[(i - 1) * m_x + j] == '1')
+                        plaza = true;
+                    else if (tab[(i - 1) * m_x + j + 1] == '1')
+                        plaza = true;
+                    else if (tab[(i + 1) * m_x + j - 1] == '1')
+                        plaza = true;
+                    else if (tab[(i + 1) * m_x + j] == '1')
+                        plaza = true;
+                    else if (tab[(i + 1) * m_x + j + 1] == '1')
+                        plaza = true;
+
+                    int stTrave = 0;
+                    if (tab[i * m_x + j - 1] == '0')
+                        stTrave++;
+                    else if (tab[i * m_x + j + 1] == '0')
+                        stTrave++;
+                    else if (tab[(i - 1) * m_x + j] == '0')
+                        stTrave++;
+                    else if (tab[(i + 1) * m_x + j] == '0')
+                        stTrave++;
+
+                    if (plaza || stTrave == 0)
+                        tab[i * m_x + j] = '.';
+                }
+            }
+        }
+    }
+    void PopraviMorje()
+    {
+        for (int i = 1; i < m_y - 1; i++)
+        {
+            for (int j = 1; j < m_x - 1; j++)
+            {
+                if (tab[i * m_x + j] == '.')
+                {
+                    bool trava = false;
+                    if (tab[i * m_x + j - 1] == '0')
+                        trava = true;
+                    else if (tab[i * m_x + j + 1] == '0')
+                        trava = true;
+                    else if (tab[(i - 1) * m_x + j - 1] == '0')
+                        trava = true;
+                    else if (tab[(i - 1) * m_x + j] == '0')
+                        trava = true;
+                    else if (tab[(i - 1) * m_x + j + 1] == '0')
+                        trava = true;
+                    else if (tab[(i + 1) * m_x + j - 1] == '0')
+                        trava = true;
+                    else if (tab[(i + 1) * m_x + j] == '0')
+                        trava = true;
+                    else if (tab[(i + 1) * m_x + j + 1] == '0')
+                        trava = true;
+
+                    if (!trava)
+                        tab[i * m_x + j] = '1';
+                }
+            }
+        }
+    }
     char &at(int x, int y)
     {
-        x+=1;
-        y+=1;
+        x += 1;
+        y += 1;
         return tab[y * m_x + x];
     }
     char *GetTab()
@@ -109,11 +184,11 @@ public:
     }
     int getX()
     {
-        return m_x-2;
+        return m_x - 2;
     }
     int getY()
     {
-        return m_y-2;
+        return m_y - 2;
     }
 
 private:
