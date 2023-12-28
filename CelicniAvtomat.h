@@ -107,11 +107,11 @@ public:
     }
     int getX()
     {
-        return m_x;
+        return m_x-2;
     }
     int getY()
     {
-        return m_y;
+        return m_y-2;
     }
 
 private:
