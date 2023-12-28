@@ -8,8 +8,8 @@ class CelicniAvtomat
 public:
     CelicniAvtomat(int x, int y, unsigned int seed, int MinProcentZa0)
     {
-        x++;
-        y++;
+        x+=2;
+        y+=2;
         tab = new char[x * y];
         m_x = x;
         m_y = y;
