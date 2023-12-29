@@ -1,198 +1,214 @@
 #ifndef CELICNIAVTOMAT_H
 #define CELICNIAVTOMAT_H
 #include <iostream>
-#include <cstdlib>
+
+#include <iomanip>
 #include <cstring>
+#include <cstdlib>
+#include <iomanip>
+
 class CelicniAvtomat
 {
 public:
-    CelicniAvtomat(int x, int y, unsigned int seed, int MinProcentZa0)
+    void Naredi(int x, int y, unsigned int seme)
     {
+        srand(seme);
         x += 2;
         y += 2;
-        tab = new char[x * y];
+        m_tab = new char[x * y];
         m_x = x;
         m_y = y;
-        srand(seed);
-        for (int i = 0; i < m_y; i++)
+
+        for (int i = 0; i < y; i++)
         {
-            for (int j = 0; j < m_x; j++)
+            for (int j = 0; j < x; j++)
             {
-                int v = rand() % 100;
-                if (v > MinProcentZa0)
-                    tab[i * m_x + j] = '0';
-                else
-                    tab[i * m_x + j] = '1';
+                m_tab[i * x + j] = rand() % 100;
             }
         }
+        for (int i = 0; i < 22; i++)
+            Sim();
+        DajVrednosti();
+        for (int i = 0; i < 9; i++)
+            NarediOtoke();
+        NarediPlazo();
+        PopraviPlazo();
     }
-    ~CelicniAvtomat()
+    friend std::ostream &operator<<(std::ostream &os, CelicniAvtomat m)
     {
-        delete[] tab;
-    }
-    float Procent()
-    {
-        float vsota = 0;
-        for (int i = 0; i < m_y; i++)
-        {
-            for (int j = 0; j < m_x; j++)
-            {
-                if (tab[i * m_x + j] == '1')
-                    vsota++;
-            }
-        }
-        return vsota / (m_x * m_y) * 100;
-    }
-    friend std::ostream &operator<<(std::ostream &os, const CelicniAvtomat &m)
-    {
+
         for (int i = 1; i < m.m_y - 1; i++)
         {
             for (int j = 1; j < m.m_x - 1; j++)
             {
-                if (m.tab[i * m.m_x + j] == '1')
-                    os << ' ';
-                else
-                    os << m.tab[i * m.m_x + j];
+                os << m.m_tab[i * m.m_x + j];
             }
             os << "\n";
         }
         return os;
     }
-    void Sim()
+    float pop()
     {
-        char *nov = new char[m_x * m_y];
-
-        memcpy(nov, tab, m_x * m_y * sizeof(char));
+        float vsota = 0;
         for (int i = 1; i < m_y - 1; i++)
         {
             for (int j = 1; j < m_x - 1; j++)
             {
 
-                int nicle = 0;
+                if (m_tab[i * m_x + j] == ' ')
+                    vsota++;
+            }
+        }
+        return vsota / ((m_x - 2) * (m_y - 2)) * 100;
+    }
 
-                if (nov[(i - 1) * m_x + (j - 1)] == '0')
-                    nicle++;
-                if (nov[(i - 1) * m_x + j] == '0')
-                    nicle++;
-                if (nov[(i - 1) * m_x + (j + 1)] == '0')
-                    nicle++;
-                if (nov[i * m_x + (j - 1)] == '0')
-                    nicle++;
-                if (nov[i * m_x + (j + 1)] == '0')
-                    nicle++;
-                if (nov[(i + 1) * m_x + (j - 1)] == '0')
-                    nicle++;
-                if (nov[(i + 1) * m_x + j] == '0')
-                    nicle++;
-                if (nov[(i + 1) * m_x + (j + 1)] == '0')
-                    nicle++;
-                if (nov[i * m_x + j] == '0')
-                    nicle++;
+private:
+    void Sim()
+    {
 
-                if (nicle >= 5)
-                    tab[i * m_x + j] = '0';
-                else
-                    tab[i * m_x + j] = '1';
+        char *nov = new char[m_x * m_y];
+
+        memcpy(nov, m_tab, m_y * m_x * sizeof(char));
+
+        for (int i = 1; i < m_y - 1; i++)
+        {
+            for (int j = 1; j < m_x - 1; j++)
+            {
+                int pop = 0;
+                pop += nov[i * m_x + j];
+                pop += nov[(i - 1) * m_x + j - 1];
+                pop += nov[(i - 1) * m_x + j + 1];
+                pop += nov[(i - 1) * m_x + j];
+                pop += nov[(i + 1) * m_x + j - 1];
+                pop += nov[(i + 1) * m_x + j];
+                pop += nov[(i + 1) * m_x + j + 1];
+                pop += nov[i * m_x + j - 1];
+                pop += nov[i * m_x + j + 1];
+                m_tab[i * m_x + j] = pop / 9;
             }
         }
         delete[] nov;
     }
-    void NarediMorje()
-    {
-
-        for (int i = 0; i < m_y; i++)
-        {
-            for (int j = 0; j < m_x; j++)
-            {
-                if (tab[i * m_x + j] == '0')
-                {
-                    bool plaza = false;
-                    if (tab[i * m_x + j - 1] == '1')
-                        plaza = true;
-                    else if (tab[i * m_x + j + 1] == '1')
-                        plaza = true;
-                    else if (tab[(i - 1) * m_x + j - 1] == '1')
-                        plaza = true;
-                    else if (tab[(i - 1) * m_x + j] == '1')
-                        plaza = true;
-                    else if (tab[(i - 1) * m_x + j + 1] == '1')
-                        plaza = true;
-                    else if (tab[(i + 1) * m_x + j - 1] == '1')
-                        plaza = true;
-                    else if (tab[(i + 1) * m_x + j] == '1')
-                        plaza = true;
-                    else if (tab[(i + 1) * m_x + j + 1] == '1')
-                        plaza = true;
-
-                    int stTrave = 0;
-                    if (tab[i * m_x + j - 1] == '0')
-                        stTrave++;
-                    else if (tab[i * m_x + j + 1] == '0')
-                        stTrave++;
-                    else if (tab[(i - 1) * m_x + j] == '0')
-                        stTrave++;
-                    else if (tab[(i + 1) * m_x + j] == '0')
-                        stTrave++;
-
-                    if (plaza || stTrave == 0)
-                        tab[i * m_x + j] = '.';
-                }
-            }
-        }
-    }
-    void PopraviMorje()
+    void DajVrednosti()
     {
         for (int i = 1; i < m_y - 1; i++)
         {
             for (int j = 1; j < m_x - 1; j++)
             {
-                if (tab[i * m_x + j] == '.')
-                {
-                    bool trava = false;
-                    if (tab[i * m_x + j - 1] == '0')
-                        trava = true;
-                    else if (tab[i * m_x + j + 1] == '0')
-                        trava = true;
-                    else if (tab[(i - 1) * m_x + j - 1] == '0')
-                        trava = true;
-                    else if (tab[(i - 1) * m_x + j] == '0')
-                        trava = true;
-                    else if (tab[(i - 1) * m_x + j + 1] == '0')
-                        trava = true;
-                    else if (tab[(i + 1) * m_x + j - 1] == '0')
-                        trava = true;
-                    else if (tab[(i + 1) * m_x + j] == '0')
-                        trava = true;
-                    else if (tab[(i + 1) * m_x + j + 1] == '0')
-                        trava = true;
 
-                    if (!trava)
-                        tab[i * m_x + j] = '1';
+                if (m_tab[i * m_x + j] > 41)
+                {
+                    m_tab[i * m_x + j] = '0';
+                }
+                else
+                {
+                    m_tab[i * m_x + j] = ' ';
                 }
             }
         }
     }
-    char &at(int x, int y)
+    void NarediOtoke()
     {
-        x += 1;
-        y += 1;
-        return tab[y * m_x + x];
+        for (int i = 1; i < m_y - 1; i++)
+        {
+            for (int j = 1; j < m_x - 1; j++)
+            {
+                if (m_tab[i * m_x + j] == '0')
+                {
+                    int stTrave = 0;
+                    if (m_tab[i * m_x + j - 1] == '0')
+                        stTrave++;
+                    if (m_tab[i * m_x + j + 1] == '0')
+                        stTrave++;
+                    if (m_tab[(i - 1) * m_x + j - 1] == '0')
+                        stTrave++;
+                    if (m_tab[(i - 1) * m_x + j + 1] == '0')
+                        stTrave++;
+                    if (m_tab[(i - 1) * m_x + j] == '0')
+                        stTrave++;
+                    if (m_tab[(i + 1) * m_x + j - 1] == '0')
+                        stTrave++;
+                    if (m_tab[(i + 1) * m_x + j] == '0')
+                        stTrave++;
+                    if (m_tab[(i + 1) * m_x + j + 1] == '0')
+                        stTrave++;
+                    if (stTrave < 4)
+                    {
+                        m_tab[i * m_x + j] = ' ';
+                    }
+                }
+            }
+        }
     }
-    char *GetTab()
+    void NarediPlazo()
     {
-        return tab;
+        for (int i = 1; i < m_y - 1; i++)
+        {
+            for (int j = 1; j < m_x - 1; j++)
+            {
+                if (m_tab[i * m_x + j] == '0')
+                {
+                    int stMorij = 0;
+                    if (m_tab[i * m_x + j - 1] == ' ')
+                        stMorij++;
+                    if (m_tab[i * m_x + j + 1] == ' ')
+                        stMorij++;
+                    if (m_tab[(i - 1) * m_x + j - 1] == ' ')
+                        stMorij++;
+                    if (m_tab[(i - 1) * m_x + j + 1] == ' ')
+                        stMorij++;
+                    if (m_tab[(i - 1) * m_x + j] == ' ')
+                        stMorij++;
+                    if (m_tab[(i + 1) * m_x + j - 1] == ' ')
+                        stMorij++;
+                    if (m_tab[(i + 1) * m_x + j] == ' ')
+                        stMorij++;
+                    if (m_tab[(i + 1) * m_x + j + 1] == ' ')
+                        stMorij++;
+                    if (stMorij > 0)
+                    {
+                        m_tab[i * m_x + j] = '.';
+                    }
+                }
+            }
+        }
     }
-    int getX()
+    void PopraviPlazo()
     {
-        return m_x - 2;
-    }
-    int getY()
-    {
-        return m_y - 2;
-    }
+        for (int i = 1; i < m_y - 1; i++)
+        {
+            for (int j = 1; j < m_x - 1; j++)
+            {
+                if (m_tab[i * m_x + j] == '.')
+                {
+                    int stTrave = 0;
+                    if (m_tab[i * m_x + j - 1] == '0')
+                        stTrave++;
+                    if (m_tab[i * m_x + j + 1] == '0')
+                        stTrave++;
+                    if (m_tab[(i - 1) * m_x + j - 1] == '0')
+                        stTrave++;
+                    if (m_tab[(i - 1) * m_x + j + 1] == '0')
+                        stTrave++;
+                    if (m_tab[(i - 1) * m_x + j] == '0')
+                        stTrave++;
+                    if (m_tab[(i + 1) * m_x + j - 1] == '0')
+                        stTrave++;
+                    if (m_tab[(i + 1) * m_x + j] == '0')
+                        stTrave++;
+                    if (m_tab[(i + 1) * m_x + j + 1] == '0')
+                        stTrave++;
 
-private:
-    char *tab;
+                    if (stTrave == 0)
+                    {
+                        m_tab[i * m_x + j] = ' ';
+                    }
+                }
+            }
+        }
+    }
+    char *m_tab;
+
     int m_x, m_y;
 };
 #endif
