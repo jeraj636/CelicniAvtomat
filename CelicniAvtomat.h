@@ -10,6 +10,7 @@
 class CelicniAvtomat
 {
 public:
+    ~CelicniAvtomat() { delete[] m_tab; }
     void Naredi(int x, int y, unsigned int seme)
     {
         srand(seme);
@@ -61,6 +62,10 @@ public:
         }
         return vsota / ((m_x - 2) * (m_y - 2)) * 100;
     }
+    int GetX() { return m_x - 2; }
+    int GetY() { return m_y - 2; }
+    char &at(int x, int y) { return m_tab[(y + 1) * m_x + x + 1]; }
+    char *GetTab() { return &m_tab[0]; }
 
 private:
     void Sim()
