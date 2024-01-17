@@ -66,6 +66,12 @@ public:
     int GetY() { return m_y - 2; }
     char &at(int x, int y) { return m_tab[(y + 1) * m_x + x + 1]; }
     char *GetTab() { return &m_tab[0]; }
+    char Trk(float pozx, float pozy)
+    {
+        pozx /= 10;
+        pozy /= 10;
+        return m_tab[(int)pozy * m_x + (int)pozx];
+    }
 
 private:
     void Sim()
