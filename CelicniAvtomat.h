@@ -66,11 +66,24 @@ public:
     int GetY() { return m_y - 2; }
     char &at(int x, int y) { return m_tab[(y + 1) * m_x + x + 1]; }
     char *GetTab() { return &m_tab[0]; }
-    char Trk(float pozx, float pozy)
+    bool Trk(float pozx, float pozy, float velx, float vely, char c)
     {
         pozx /= 10;
         pozy /= 10;
-        return m_tab[(int)pozy * m_x + (int)pozx];
+
+        velx /= 10;
+        vely /= 10;
+        for (int i = pozy - vely / 2 - 1; i < pozy + vely / 2 + 1; i++)
+        {
+            for (int j = pozx - velx / 2 - 1; j < pozx + velx / 2 + 1; j++)
+                if (m_tab[i * m_x + j] == c)
+                    return true;
+        }
+        return false;
+    }
+    void Unici()
+    {
+        delete[] m_tab;
     }
 
 private:
