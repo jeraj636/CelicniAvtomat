@@ -73,9 +73,9 @@ public:
 
         velx /= 10;
         vely /= 10;
-        for (int i = pozy - vely / 2 - 1; i < pozy + vely / 2 + 1; i++)
+        for (int i = pozy - vely / 2; i < pozy + vely / 2; i++)
         {
-            for (int j = pozx - velx / 2 - 1; j < pozx + velx / 2 + 1; j++)
+            for (int j = pozx - velx / 2; j < pozx + velx / 2; j++)
                 if (m_tab[i * m_x + j] == c)
                     return true;
         }
