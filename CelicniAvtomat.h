@@ -66,13 +66,13 @@ public:
     int GetY() { return m_y - 2; }
     char &at(int x, int y) { return m_tab[(y + 1) * m_x + x + 1]; }
     char *GetTab() { return &m_tab[0]; }
-    bool Trk(float pozx, float pozy, float velx, float vely, char c)
+    bool Trk(float pozx, float pozy, float velx, float vely, char c, int resx, int resy)
     {
-        pozx /= 10;
-        pozy /= 10;
+        pozx /= resx / (m_x - 2);
+        pozy /= resy / (m_y - 2);
 
-        velx /= 10;
-        vely /= 10;
+        velx /= resx / (m_x - 2);
+        vely /= resy / (m_y - 2);
         for (int i = pozy - vely / 2; i < pozy + vely / 2; i++)
         {
             for (int j = pozx - velx / 2; j < pozx + velx / 2; j++)
